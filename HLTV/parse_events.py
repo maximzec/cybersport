@@ -1,7 +1,7 @@
 import requests
 from bs4 import BeautifulSoup
 from constants.headers import headers
-
+from pprint import pprint
 tab = 'All'
 
 
@@ -42,14 +42,28 @@ def parse_upcoming_events():
     if response.status_code == 200:
         soup = BeautifulSoup(response.text, "html.parser")
         months = soup.find_all('div', class_='events-month')
-        for month in soup.find_all('div', class_='events-month'):
-            month_headline = soup.find('div', class_='standard-headline').text
+        for month in months:
+            month_headline = month.find('div', class_='standard-headline').text
             upcoming_events[month_headline] = {}
-
+            for month_event in month.find_all('a', 'a-reset small-event standard-box'):
+                event_name = month_event.find(
+                    'div', class_='text-ellipsis').text
+                event_url = month_event['href']
+                event_teams = month_event.find(
+                    'td', class_='col-value small-col').text
+                event_pool = month_event.find(
+                    'td', class_='col-value small-col prizePoolEllipsis').text
+                event_status = month_event.find(
+                    'td', class_='col-value small-col gtSmartphone-only').text
+                upcoming_events[month_headline][event_name] = {}
+                upcoming_events[month_headline][event_name]['url'] = 'htlv.org' + event_url
+                upcoming_events[month_headline][event_name]['teams'] = event_teams
+                upcoming_events[month_headline][event_name]['pool'] = event_pool
+                upcoming_events[month_headline][event_name]['status'] = event_status
         return upcoming_events
     else:
         return "Not successful status code" + response.status_code
 
 
 # print(parse_on_going_events())
-print(parse_upcoming_events())
+pprint(parse_upcoming_events())
