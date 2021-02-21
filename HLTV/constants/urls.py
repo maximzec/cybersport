@@ -6,3 +6,7 @@ matches_urls = {
     'top-tier': 'https://www.hltv.org/matches?predefinedFilter=top_tier',
     'lan': 'https://www.hltv.org/matches?predefinedFilter=lan_only'
 }
+
+{
+
+}
